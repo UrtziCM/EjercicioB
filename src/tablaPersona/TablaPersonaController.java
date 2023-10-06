@@ -39,6 +39,13 @@ public class TablaPersonaController {
     @FXML
     private Button agregarBtn;
     
+    @FXML
+    private Button deleteButton;
+    
+    @FXML
+    private Button modifyButton;
+
+    
     private ObservableList<Persona> data;
     
     @FXML
@@ -48,44 +55,39 @@ public class TablaPersonaController {
     	edadColumn.setCellValueFactory(new PropertyValueFactory<>("edad"));
     	data = FXCollections.observableArrayList();
     	agregarBtn.setOnAction(e -> agregarPersona(e));
+    	deleteButton.setOnAction(e -> borrarPersona(e));;
     }
     
     @FXML
     void agregarPersona(ActionEvent event) {
     	if (!queFalta().isEmpty()) {
-    		Alert alerta = new Alert(AlertType.ERROR);
-    		alerta.setTitle("Campos faltantes");
-    		alerta.setHeaderText(null);
-    		alerta.setContentText(queFalta());
-    		alerta.showAndWait();
+    		mostrarVentanaEmergente("Campos faltantes",queFalta(),AlertType.ERROR);
     		return;
     	}
     	Persona pers = null;
     	try {			
     		pers = new Persona(nombreTxtf.getText(),apellidosTxtf.getText(),Integer.parseInt(edadTxtf.getText()));
 		} catch (NumberFormatException e) {
-			Alert avisoedad = new Alert(AlertType.INFORMATION);
-			avisoedad.setTitle("Numero es NAN");
-			avisoedad.setHeaderText(null);
-			avisoedad.setContentText("La edad debe ser un número");
-			avisoedad.showAndWait();
+			mostrarVentanaEmergente("Numero es NAN", "La edad debe ser un número", AlertType.INFORMATION);
 			return;
 		}
 		if (data.contains(pers)) {
-			Alert entradaRepetida = new Alert(AlertType.INFORMATION);
-			entradaRepetida.setTitle("Entrada duplicada");
-			entradaRepetida.setHeaderText(null);
-			entradaRepetida.setContentText("Ya se ha guardado a esa persona");
-			entradaRepetida.showAndWait();
+			mostrarVentanaEmergente("Entrada duplicada", "Ya se ha guardado a esa persona", AlertType.INFORMATION);
 			return;
 		}
 		data.add(pers);
 		personaTableView.setItems(data);
-		Alert anadidaPersona = new Alert(AlertType.INFORMATION);
-		anadidaPersona.setTitle("Entrada añadida");
-		anadidaPersona.setHeaderText(null);
-		anadidaPersona.setContentText("Se ha agregado una nueva entrada");
-		anadidaPersona.showAndWait();
+		mostrarVentanaEmergente("Agregada nueva entrada", "Se ha añadido una nueva entrada", AlertType.INFORMATION);
+    }
+    @FXML
+    void borrarPersona(ActionEvent event) {
+    	data.remove(personaTableView.getSelectionModel().getSelectedItem());
+    	mostrarVentanaEmergente("Borrada entrada", "Se ha borrado la entrada elegida", AlertType.INFORMATION);
+    }
+
+    @FXML
+    void modificarPersona(ActionEvent event) {
+
     }
     
     private String queFalta() {
@@ -97,6 +99,14 @@ public class TablaPersonaController {
     	if (edadTxtf.getText().isEmpty())
 			faltantes += "El campo edad es obligatorio\n";
 		return faltantes;
+    }
+    
+    private static void mostrarVentanaEmergente(String titulo,String content, AlertType tipo) {
+    	Alert anadidaPersona = new Alert(tipo);
+		anadidaPersona.setTitle(titulo);
+		anadidaPersona.setHeaderText(null);
+		anadidaPersona.setContentText(content);
+		anadidaPersona.showAndWait();
     }
     
 
