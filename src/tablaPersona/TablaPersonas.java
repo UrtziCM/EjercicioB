@@ -11,7 +11,7 @@ public class TablaPersonas extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-    	Parent root = FXMLLoader.load(this.getClass().getResource("/fxml/tablaPersonas.fxml"));
+    	Parent root = FXMLLoader.load(this.getClass().getResource("/fxml/tablaPersonas2.fxml"));
     	Scene scene = new Scene( root, 300, 275);
     	
     	stage.getIcons().add(new Image("https://cdn-icons-png.flaticon.com/512/533/533864.png"));
