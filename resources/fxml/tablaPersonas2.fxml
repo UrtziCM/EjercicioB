@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
 <BorderPane fx:controller="tablaPersona.TablaPersonaController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="797.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <left>
       <VBox prefHeight="400.0" prefWidth="162.0" BorderPane.alignment="CENTER">
@@ -68,7 +67,7 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="41.0" prefWidth="617.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Modificar">
+            <Button fx:id="modifyButton" mnemonicParsing="false" onAction="#modificarPersona" text="Modificar">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>
@@ -76,7 +75,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Eliminar">
+            <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#borrarPersona" text="Eliminar">
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </padding>

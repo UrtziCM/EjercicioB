@@ -1,8 +1,11 @@
 package tablaPersona;
+import java.util.Stack;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -10,7 +13,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.Persona;
 
 public class TablaPersonaController {
@@ -55,7 +63,7 @@ public class TablaPersonaController {
     	edadColumn.setCellValueFactory(new PropertyValueFactory<>("edad"));
     	data = FXCollections.observableArrayList();
     	agregarBtn.setOnAction(e -> agregarPersona(e));
-    	deleteButton.setOnAction(e -> borrarPersona(e));;
+    	deleteButton.setOnAction(e -> borrarPersona(e));
     }
     
     @FXML
@@ -87,7 +95,49 @@ public class TablaPersonaController {
 
     @FXML
     void modificarPersona(ActionEvent event) {
-
+    	if (personaTableView.getSelectionModel().getSelectedItem() != null)
+    		ventanaModificar(personaTableView.getSelectionModel().getSelectedIndex());
+    }
+    
+    private void ventanaModificar(int index) {
+    	
+		GridPane mainFrame = new GridPane();
+		Text nombre = new Text("Nombre: ");
+		mainFrame.add(nombre, 0, 0);
+		TextField modifNombreTxtf = new TextField(nombreTxtf.getText());
+		mainFrame.add(modifNombreTxtf, 1, 0);
+		
+		Text apellido = new Text("Apellido: ");
+		mainFrame.add(apellido, 0, 1);
+		TextField modifApellidoTxtf = new TextField(apellidosTxtf.getText());
+		mainFrame.add(modifApellidoTxtf, 1, 1);
+		
+		Text edad = new Text("Edad: ");
+		mainFrame.add(edad, 0, 2);
+		TextField modifEdadTxtf = new TextField(edadTxtf.getText());
+		mainFrame.add(modifEdadTxtf, 1, 2);
+		
+		Button botonAceptar = new Button("Aceptar");
+		mainFrame.add(botonAceptar, 0, 3);
+		GridPane.setColumnSpan(botonAceptar, GridPane.REMAINING);
+		
+		
+		Stage modifyStage = new Stage();
+		botonAceptar.setOnAction(e -> {
+			try {				
+				data.set(index, new Persona(modifNombreTxtf.getText(),modifApellidoTxtf.getText(),Integer.parseInt(modifEdadTxtf.getText())));
+				personaTableView.setItems(data);
+				modifyStage.close();
+			} catch (NumberFormatException numberFormat) {
+				mostrarVentanaEmergente("Edad no es numero", "La edad debe ser un numero", AlertType.ERROR);
+				return;
+			}
+		});
+		
+		modifyStage.setScene(new Scene(mainFrame));
+    	modifyStage.setTitle("Modificar datos");
+		modifyStage.initModality(Modality.APPLICATION_MODAL);
+		modifyStage.showAndWait();
     }
     
     private String queFalta() {
