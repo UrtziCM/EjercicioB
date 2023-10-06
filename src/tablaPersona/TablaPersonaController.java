@@ -89,8 +89,11 @@ public class TablaPersonaController {
     }
     @FXML
     void borrarPersona(ActionEvent event) {
-    	data.remove(personaTableView.getSelectionModel().getSelectedItem());
-    	mostrarVentanaEmergente("Borrada entrada", "Se ha borrado la entrada elegida", AlertType.INFORMATION);
+    	if (personaTableView.getSelectionModel().getSelectedItem() != null) {
+    		data.remove(personaTableView.getSelectionModel().getSelectedItem());
+    		mostrarVentanaEmergente("Borrada entrada", "Se ha borrado la entrada elegida", AlertType.INFORMATION);    		
+    	}
+
     }
 
     @FXML
