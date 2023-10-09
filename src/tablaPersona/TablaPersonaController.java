@@ -64,6 +64,12 @@ public class TablaPersonaController {
     	data = FXCollections.observableArrayList();
     	agregarBtn.setOnAction(e -> agregarPersona(e));
     	deleteButton.setOnAction(e -> borrarPersona(e));
+    	personaTableView.setOnMouseClicked(e -> {
+    		Persona thisPerson = personaTableView.getSelectionModel().getSelectedItem();
+    		nombreTxtf.setText(thisPerson.getNombre());
+    		apellidosTxtf.setText(thisPerson.getApellido());
+    		edadTxtf.setText(thisPerson.getEdad()+"");
+    	});
     }
     
     @FXML
@@ -85,6 +91,9 @@ public class TablaPersonaController {
 		}
 		data.add(pers);
 		personaTableView.setItems(data);
+		nombreTxtf.setText("");
+		apellidosTxtf.setText("");
+		edadTxtf.setText("");
 		mostrarVentanaEmergente("Agregada nueva entrada", "Se ha añadido una nueva entrada", AlertType.INFORMATION);
     }
     @FXML
@@ -95,6 +104,7 @@ public class TablaPersonaController {
     	}
 
     }
+    
 
     @FXML
     void modificarPersona(ActionEvent event) {
@@ -103,44 +113,15 @@ public class TablaPersonaController {
     }
     
     private void ventanaModificar(int index) {
-    	
-		GridPane mainFrame = new GridPane();
-		Text nombre = new Text("Nombre: ");
-		mainFrame.add(nombre, 0, 0);
-		TextField modifNombreTxtf = new TextField(nombreTxtf.getText());
-		mainFrame.add(modifNombreTxtf, 1, 0);
-		
-		Text apellido = new Text("Apellido: ");
-		mainFrame.add(apellido, 0, 1);
-		TextField modifApellidoTxtf = new TextField(apellidosTxtf.getText());
-		mainFrame.add(modifApellidoTxtf, 1, 1);
-		
-		Text edad = new Text("Edad: ");
-		mainFrame.add(edad, 0, 2);
-		TextField modifEdadTxtf = new TextField(edadTxtf.getText());
-		mainFrame.add(modifEdadTxtf, 1, 2);
-		
-		Button botonAceptar = new Button("Aceptar");
-		mainFrame.add(botonAceptar, 0, 3);
-		GridPane.setColumnSpan(botonAceptar, GridPane.REMAINING);
-		
-		
 		Stage modifyStage = new Stage();
-		botonAceptar.setOnAction(e -> {
-			try {				
-				data.set(index, new Persona(modifNombreTxtf.getText(),modifApellidoTxtf.getText(),Integer.parseInt(modifEdadTxtf.getText())));
-				personaTableView.setItems(data);
-				modifyStage.close();
-			} catch (NumberFormatException numberFormat) {
-				mostrarVentanaEmergente("Edad no es numero", "La edad debe ser un numero", AlertType.ERROR);
-				return;
-			}
-		});
-		
-		modifyStage.setScene(new Scene(mainFrame));
-    	modifyStage.setTitle("Modificar datos");
-		modifyStage.initModality(Modality.APPLICATION_MODAL);
-		modifyStage.showAndWait();
+		try {				
+			data.set(index, new Persona(nombreTxtf.getText(),apellidosTxtf.getText(),Integer.parseInt(edadTxtf.getText())));
+			personaTableView.setItems(data);
+			modifyStage.close();
+		} catch (NumberFormatException numberFormat) {
+			mostrarVentanaEmergente("Edad no es numero", "La edad debe ser un numero", AlertType.ERROR);
+			return;
+		}
     }
     
     private String queFalta() {
