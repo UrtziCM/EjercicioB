@@ -24,13 +24,13 @@ import model.Persona;
 public class TablaPersonaController {
 
     @FXML
-    private TableColumn<?, ?> nombreColumn;
+    private TableColumn<Persona, String> nombreColumn;
    
     @FXML
-    private TableColumn<?, ?> apellidosColumn;
+    private TableColumn<Persona, String> apellidosColumn;
     
     @FXML
-    private TableColumn<?, ?> edadColumn;
+    private TableColumn<Persona, Integer> edadColumn;
 
     @FXML
     private TextField edadTxtf;
@@ -65,6 +65,8 @@ public class TablaPersonaController {
     	agregarBtn.setOnAction(e -> agregarPersona(e));
     	deleteButton.setOnAction(e -> borrarPersona(e));
     	personaTableView.setOnMouseClicked(e -> {
+    		if (personaTableView.getSelectionModel().getSelectedItem() == null)
+    			return;
     		Persona thisPerson = personaTableView.getSelectionModel().getSelectedItem();
     		nombreTxtf.setText(thisPerson.getNombre());
     		apellidosTxtf.setText(thisPerson.getApellido());
@@ -91,15 +93,20 @@ public class TablaPersonaController {
 		}
 		data.add(pers);
 		personaTableView.setItems(data);
+		clearTextfields();
+		mostrarVentanaEmergente("Agregada nueva entrada", "Se ha añadido una nueva entrada", AlertType.INFORMATION);
+    }
+
+	private void clearTextfields() {
 		nombreTxtf.setText("");
 		apellidosTxtf.setText("");
 		edadTxtf.setText("");
-		mostrarVentanaEmergente("Agregada nueva entrada", "Se ha añadido una nueva entrada", AlertType.INFORMATION);
-    }
+	}
     @FXML
     void borrarPersona(ActionEvent event) {
     	if (personaTableView.getSelectionModel().getSelectedItem() != null) {
     		data.remove(personaTableView.getSelectionModel().getSelectedItem());
+    		clearTextfields();
     		mostrarVentanaEmergente("Borrada entrada", "Se ha borrado la entrada elegida", AlertType.INFORMATION);    		
     	}
 
@@ -108,20 +115,23 @@ public class TablaPersonaController {
 
     @FXML
     void modificarPersona(ActionEvent event) {
-    	if (personaTableView.getSelectionModel().getSelectedItem() != null)
-    		ventanaModificar(personaTableView.getSelectionModel().getSelectedIndex());
+    	if (personaTableView.getSelectionModel().getSelectedItem() != null) {
+    		if (comprobarModificacion(personaTableView.getSelectionModel().getSelectedIndex())) {    			
+    			mostrarVentanaEmergente("Modificada una entrada", "Se ha modificado una entrada con éxito", AlertType.INFORMATION);
+    			clearTextfields();
+    		}
+    	}
     }
     
-    private void ventanaModificar(int index) {
-		Stage modifyStage = new Stage();
+    private boolean comprobarModificacion(int index) {
 		try {				
 			data.set(index, new Persona(nombreTxtf.getText(),apellidosTxtf.getText(),Integer.parseInt(edadTxtf.getText())));
 			personaTableView.setItems(data);
-			modifyStage.close();
 		} catch (NumberFormatException numberFormat) {
 			mostrarVentanaEmergente("Edad no es numero", "La edad debe ser un numero", AlertType.ERROR);
-			return;
+			return false;
 		}
+		return true;
     }
     
     private String queFalta() {
