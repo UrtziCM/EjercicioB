@@ -1,4 +1,4 @@
-package tablaPersona;
+package controllers;
 import java.util.Stack;
 
 import javafx.collections.FXCollections;
